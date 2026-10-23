@@ -1,18 +1,29 @@
-import Home from "./pages/home.jsx";
-import Privacy from "./pages/privacy.jsx";
-import Terms from "./pages/terms.jsx";
-import { Routes, Route } from "react-router-dom";
-import "./App.css";
+import "../App.css";
+import Header from "../components/Header";
+import Chat from "../components/Chat";
 
-function App() {
+
+export default function Home() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/privacy" element={<Privacy />} />
-      <Route path="/terms" element={<Terms />} />
-      <Route path="*" element={<Home />} />
-    </Routes>
+    <div className="relative h-screen w-full bg-[var(--app-panel)] overflow-hidden">
+      <div
+        aria-hidden="true"
+        className="fixed inset-0 z-0 pointer-events-none"
+        style={{
+          backgroundImage:
+            "radial-gradient(var(--app-dot) 1.5px, transparent 1.5px)",
+          backgroundSize: "28px 28px",
+          backgroundPosition: "center top",
+          maskImage: "linear-gradient(to bottom, black 40%, transparent 100%)",
+          WebkitMaskImage:
+            "linear-gradient(to bottom, black 40%, transparent 100%)",
+        }}
+      />
+
+      <div className="relative z-10 flex flex-col h-full">
+        <Header />
+        <Chat />
+      </div>
+    </div>
   );
 }
-
-export default App;
