@@ -1,6 +1,6 @@
 import React from "react";
 
-export const TermsOfService = () => {
+export default function TermsOfService () {
   return (
     <div className="min-h-screen bg-gray-950 text-gray-200 px-6 py-12 flex justify-center">
       <main className="w-full max-w-3xl space-y-8 font-sans">
