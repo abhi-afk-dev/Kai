@@ -10,6 +10,7 @@ front/dist/
 front/build/
 front/.next/
 front/.vite/
+front/.env
 
 # Backend sensitive files, databases, and local caches
 back/.env
