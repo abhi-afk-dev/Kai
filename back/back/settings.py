@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 OPEN_API_KEY = os.getenv("OPEN_API_KEY")
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -17,7 +17,6 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 DEBUG = True
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760
-
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760
 
 ALLOWED_HOSTS = [
@@ -25,10 +24,6 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'kai-backend-production-0b2a.up.railway.app'
 ]
-
-RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-if RENDER_EXTERNAL_HOSTNAME:
-    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -85,6 +80,7 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
     'x-takumi-auth',
 ]
+
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173',
     'http://127.0.0.1:5173',
@@ -92,6 +88,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://kuro.run/'
     'https://www.kuro.run/',
 ]
+
 CSRF_COOKIE_SECURE = False
 CSRF_COOKIE_SAMESITE = None
 

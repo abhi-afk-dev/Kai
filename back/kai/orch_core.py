@@ -77,7 +77,7 @@ async def single_agent(prompt: str, agent):
     MAX_STEPS = 5
     for step in range(MAX_STEPS):
         response = await client.chat.completions.create(
-            model="recursive/flint-v1.0:free",
+            model="nvidia/nemotron-3.5-super-vl:free",
             messages=messages,
             tools=tools,
             tool_choice="auto",

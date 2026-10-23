@@ -69,7 +69,7 @@ async def kodo(user_prompt):
 
     
     stream = await client.chat.completions.create(
-        model="recursive/flint-v1.0:free",
+        model="nvidia/nemotron-3.5-super-vl:free",
         messages=messages,
         stream=True,
         max_tokens=8000,

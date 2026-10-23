@@ -7,9 +7,6 @@ from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
 async def chat_stream_view(request):
-    if request.headers.get("X-Kai-Key") != os.getenv("KAI_API_KEY"):
-        return StreamingHttpResponse("Unauthorized", status=401)
-
     data = json.loads(request.body)
     prompt = data.get("prompt", "")
 
