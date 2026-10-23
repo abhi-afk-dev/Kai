@@ -115,7 +115,7 @@ class UnifiedMCPManager:
         #     }
         # }
 
-        print("   -> All 5 MCP servers successfully mapped.")
+        print("   -> All 3 MCP servers successfully mapped.")
 
     @asynccontextmanager
     async def _open_session(self, config):
@@ -182,9 +182,10 @@ class UnifiedMCPManager:
                             }
                         )
             except Exception as e:
+                target = config.get("url", "stdio")
                 for leaf in _leaf_exceptions(e):
                     print(
-                        f"❌ Failed to fetch tools from {name}: {type(leaf).__name__}: {leaf}"
+                        f"❌ Failed to fetch tools from {name} ({target}): {type(leaf).__name__}: {leaf}"
                     )
         return combined
 
