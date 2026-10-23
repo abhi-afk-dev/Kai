@@ -27,6 +27,7 @@ export async function streamChatResponse(prompt, onChunk, signal) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "X-Kai-Key": KAI_KEY,
       },
       body: JSON.stringify({ prompt }),
       signal,
