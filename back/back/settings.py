@@ -23,6 +23,7 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
+    'kai-backend-production-0b2a.up.railway.app'
 ]
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
