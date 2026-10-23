@@ -1,3 +1,4 @@
+import os
 import json
 from pathlib import Path
 from mcp.client.auth import TokenStorage
@@ -5,7 +6,7 @@ from mcp.shared.auth import OAuthClientInformationFull, OAuthToken
 
 class FileTokenStorage(TokenStorage):
     def __init__(self, name: str):
-        self.path = Path(".mcp_auth") / f"{name}.json"
+        self.path = Path(os.getenv("MCP_AUTH_DIR", ".mcp_auth")) / f"{name}.json"
         self.path.parent.mkdir(exist_ok=True)
 
     def _read(self):

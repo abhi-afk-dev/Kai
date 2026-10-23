@@ -1,13 +1,14 @@
-from django.http import StreamingHttpResponse
-from django.views.decorators.csrf import csrf_exempt
+import os
 import json
-from .orch_core import main as run_kai_orchestrator
 from .conv import kai_non_web_stream
+from django.http import StreamingHttpResponse
+from .orch_core import main as run_kai_orchestrator
+from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
 async def chat_stream_view(request):
-    if request.method != "POST":
-        return StreamingHttpResponse("Only POST allowed", status=405)
+    if request.headers.get("X-Kai-Key") != os.getenv("KAI_API_KEY"):
+        return StreamingHttpResponse("Unauthorized", status=401)
 
     data = json.loads(request.body)
     prompt = data.get("prompt", "")

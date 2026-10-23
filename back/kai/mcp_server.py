@@ -12,7 +12,6 @@ from mcp.client.auth import OAuthClientProvider
 from mcp.shared.auth import OAuthClientMetadata
 from pydantic import AnyUrl
 import httpx2
-    
 
 load_dotenv()
 
@@ -24,6 +23,7 @@ def _leaf_exceptions(exc):
     else:
         yield exc
 
+
 class UnifiedMCPManager:
     def __init__(self):
         self.servers = {}
@@ -32,8 +32,10 @@ class UnifiedMCPManager:
     def _canva_auth():
         async def no_redirect(url):
             raise RuntimeError("Canva isn't authorized. Run: python -m kai.auth_canva")
+
         async def no_callback():
             raise RuntimeError("Canva isn't authorized. Run: python -m kai.auth_canva")
+
         return OAuthClientProvider(
             server_url="https://mcp.canva.com/mcp",
             client_metadata=OAuthClientMetadata(
@@ -46,7 +48,7 @@ class UnifiedMCPManager:
             redirect_handler=no_redirect,
             callback_handler=no_callback,
         )
-    
+
     async def initialize_all_servers(self):
         print("🔌 Registering all MCP endpoints and parameters...")
 
@@ -60,12 +62,14 @@ class UnifiedMCPManager:
                 args=["--yes", "--quiet", "@modelcontextprotocol/server-github"],
                 env={
                     **os.environ,
-                    "GITHUB_PERSONAL_ACCESS_TOKEN": os.getenv("GITHUB_PERSONAL_ACCESS_TOKEN", ""),
+                    "GITHUB_PERSONAL_ACCESS_TOKEN": os.getenv(
+                        "GITHUB_PERSONAL_ACCESS_TOKEN", ""
+                    ),
                     "CI": "true",
-                    "LOG_LEVEL": "error",     
-                    "npm_config_loglevel": "silent"
-                }
-            )
+                    "LOG_LEVEL": "error",
+                    "npm_config_loglevel": "silent",
+                },
+            ),
         }
 
         # ==========================================
@@ -73,8 +77,8 @@ class UnifiedMCPManager:
         # ==========================================
         self.servers["workspace"] = {
             "type": "http",
-            "url": "http://127.0.0.1:8001/mcp",
-            "headers": {}
+            "url": os.getenv("WORKSPACE_MCP_URL", "http://127.0.0.1:8001/mcp"),
+            "headers": {},
         }
 
         # ==========================================
@@ -123,7 +127,9 @@ class UnifiedMCPManager:
                 follow_redirects=True,
                 timeout=30.0,
             ) as http_client:
-                async with streamable_http_client(config["url"], http_client=http_client) as streams:
+                async with streamable_http_client(
+                    config["url"], http_client=http_client
+                ) as streams:
                     async with ClientSession(streams[0], streams[1]) as session:
                         await session.initialize()
                         yield session
@@ -152,7 +158,11 @@ class UnifiedMCPManager:
                     response = await session.list_tools()
                     for tool in response.tools:
                         ns_name = f"{name}__{tool.name}"
-                        if allowed_tools is not None and ns_name not in allowed_tools and tool.name not in allowed_tools:
+                        if (
+                            allowed_tools is not None
+                            and ns_name not in allowed_tools
+                            and tool.name not in allowed_tools
+                        ):
                             continue
 
                         schema = (
@@ -161,20 +171,26 @@ class UnifiedMCPManager:
                             or {"type": "object", "properties": {}}
                         )
 
-                        combined.append({
-                            "type": "function",
-                            "function": {
-                                "name": ns_name,
-                                "description": tool.description or "",
-                                "parameters": schema,
-                            },
-                        })
+                        combined.append(
+                            {
+                                "type": "function",
+                                "function": {
+                                    "name": ns_name,
+                                    "description": tool.description or "",
+                                    "parameters": schema,
+                                },
+                            }
+                        )
             except Exception as e:
                 for leaf in _leaf_exceptions(e):
-                    print(f"❌ Failed to fetch tools from {name}: {type(leaf).__name__}: {leaf}")
+                    print(
+                        f"❌ Failed to fetch tools from {name}: {type(leaf).__name__}: {leaf}"
+                    )
         return combined
 
-    async def execute_tool(self, server_name: str, namespaced_tool: str, args: dict) -> str:
+    async def execute_tool(
+        self, server_name: str, namespaced_tool: str, args: dict
+    ) -> str:
         config = self.servers[server_name]
         tool_name = namespaced_tool.removeprefix(f"{server_name}__")
 
@@ -186,7 +202,7 @@ class UnifiedMCPManager:
             is_error = getattr(result, "is_error", False)
 
         parts = []
-        for c in (getattr(result, "content", None) or []):
+        for c in getattr(result, "content", None) or []:
             text = getattr(c, "text", None)
             parts.append(text if text is not None else str(c))
         out = "\n".join(parts)
