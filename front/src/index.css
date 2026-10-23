@@ -1,0 +1,35 @@
+.jet {
+  font-family: "JetBrains Mono", monospace;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+:root {
+  color-scheme: light;
+  --app-panel: #ffffff;
+  --app-panel-alt: #f4f4f5;
+  --app-text: #0a0a0a;
+  --app-text-dim: rgba(10, 10, 10, 0.75);
+  --app-text-muted: #737373;
+  --app-border: rgba(0, 0, 0, 0.15);
+  --app-overlay: rgba(0, 0, 0, 0.05);
+  --app-hover: rgba(0, 0, 0, 0.04);
+  --app-accent: #0a0a0a;
+  --app-accent-contrast: #fafafa;
+  --app-dot: rgba(0, 0, 0, 0.18);
+}
+
+.dark {
+  color-scheme: dark;
+  --app-panel: #0a0a0a;
+  --app-panel-alt: #141414;
+  --app-text: #fafafa;
+  --app-text-dim: rgba(250, 250, 250, 0.8);
+  --app-text-muted: #8a8a8a;
+  --app-border: rgba(255, 255, 255, 0.1);
+  --app-overlay: rgba(255, 255, 255, 0.05);
+  --app-hover: rgba(255, 255, 255, 0.04);
+  --app-accent: #fafafa;
+  --app-dot: rgba(255, 255, 255, 0.15);
+  --app-accent-contrast: #0a0a0a;
+}
+@custom-variant dark (&:where(.dark, .dark *));

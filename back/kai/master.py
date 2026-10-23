@@ -1,0 +1,110 @@
+import os
+import json
+import asyncio
+from openai import AsyncOpenAI
+from dotenv import load_dotenv
+
+from .kodo import kodo
+from .conv import kai_chat
+from .mcp_server import UnifiedMCPManager
+from .instructions import KAI_MASTER_AGENT_INSTRUCTION
+
+load_dotenv()
+
+client = AsyncOpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=os.getenv("OPEN_API_KEY"),
+)
+
+INTERNAL_TOOLS = [
+    {
+        "type": "function",
+        "function": {
+            "name": "run_deep_research",
+            "description": "Run deep multi-model research (Kodo) on complex technical topics, APIs, or libraries.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {"type": "string", "description": "The detailed research query."}
+                },
+                "required": ["query"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "web_search",
+            "description": "Search the live web or read a URL for real-time facts using Saku.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "prompt": {"type": "string", "description": "What to search or extract from the web."}
+                },
+                "required": ["prompt"]
+            }
+        }
+    }
+]
+
+async def run_master_agentic_loop(prompt, mpm_manager):
+    all_servers = ["github", "canva", "workspace"]
+    mcp_tools = await mpm_manager.fetch_tools_for_selected(selected_server_names=all_servers)
+    
+    combined_tools = mcp_tools + INTERNAL_TOOLS
+
+    messages = [
+        {"role": "system", "content": KAI_MASTER_AGENT_INSTRUCTION},
+        {"role": "user", "content": prompt},
+    ]
+
+    for step in range(10):
+        print(f"🔄 Master Loop Iteration [{step + 1}/10]")
+        
+        response = await client.chat.completions.create(
+            model="recursive/flint-v1.0:free",
+            messages=messages,
+            tools=combined_tools,
+            tool_choice="auto",
+            max_tokens=4000,
+            timeout=120.0,
+        )
+        
+        message = response.choices[0].message
+        messages.append(message)
+
+        if not message.tool_calls:
+            return message.content
+
+        for tool_call in message.tool_calls:
+            tool_name = tool_call.function.name
+            tool_args = json.loads(tool_call.function.arguments)
+            
+            print(f"🛠️ Master Agent invoking tool: {tool_name} | Args: {tool_args}")
+            
+            tool_result = ""
+            try:
+                if tool_name == "run_deep_research":
+                    tool_result = await kodo(tool_args.get("query"))
+                
+                elif tool_name == "web_search":
+                    tool_result = await kai_chat(tool_args.get("prompt"))
+                
+                else:
+                    server_name = tool_name.split("__")[0] if "__" in tool_name else None
+                    
+                    if server_name:
+                        tool_result = await mpm_manager.execute_tool(server_name, tool_name, tool_args)
+                    else:
+                        tool_result = f"Error: Unknown tool namespace for {tool_name}"
+
+            except Exception as e:
+                tool_result = f"❌ Error executing tool {tool_name}: {e}"
+
+            messages.append({
+                "role": "tool",
+                "tool_call_id": tool_call.id,
+                "content": str(tool_result)
+            })
+
+    return "⚠️ Master agentic loop reached maximum iteration limit (10 steps) without finishing."

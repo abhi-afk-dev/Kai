@@ -1,0 +1,34 @@
+# Root Virtual Environment
+env/
+venv/
+.venv/
+ENV/
+
+# Frontend dependencies and build outputs
+front/node_modules/
+front/dist/
+front/build/
+front/.next/
+front/.vite/
+
+# Backend sensitive files, databases, and local caches
+back/.env
+back/.env.*
+back/db.sqlite3
+back/db.sqlite3-journal
+back/.mcp_auth/
+back/__pycache__/
+back/**/*.py[cod]
+
+# IDEs and Editors (VS Code, PyCharm, etc.)
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
