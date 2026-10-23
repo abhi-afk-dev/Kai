@@ -87,6 +87,9 @@ CORS_ALLOW_HEADERS = [
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173',
     'http://127.0.0.1:5173',
+    'https://kai-gray-eight.vercel.app/',
+    'https://kuro.run/'
+    'https://www.kuro.run/',
 ]
 CSRF_COOKIE_SECURE = False
 CSRF_COOKIE_SAMESITE = None
