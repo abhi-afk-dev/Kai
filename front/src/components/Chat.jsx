@@ -53,7 +53,7 @@ const aiMdComponents = {
   ),
   p: ({ node, ...props }) => (
     <p
-      className="text-sm sm:text-base text-[var(--app-text-dim)] leading-relaxed mb-3 font-sans"
+      className="text-sm sm:text-base text-[var(--app-text-dim)] leading-relaxed font-sans"
       {...props}
     />
   ),
