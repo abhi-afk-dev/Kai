@@ -268,11 +268,13 @@ function Chat() {
       <div className="flex-1 w-full overflow-y-auto custom-scrollbar p-3 sm:p-6 flex flex-col items-center gap-6 sm:gap-8 pb-32 sm:pb-36">
         <div className="flex text-[var(--app-text)] flex-col w-full max-w-7xl gap-6 sm:gap-8">
           {messages.length === 0 && !isLoading && (
-            <ChatEmptyState
-              onPromptSelect={(prompt) =>
-                handleGenerate(prompt, undefined, undefined, undefined)
-              }
-            />
+            <div className="h-full w-full flex items-center justify-center">
+              <ChatEmptyState
+                onPromptSelect={(prompt) =>
+                  handleGenerate(prompt, undefined, undefined, undefined)
+                }
+              />
+            </div>
           )}
 
           {messages.map((msg, idx) => {
