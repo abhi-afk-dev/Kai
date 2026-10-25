@@ -56,7 +56,7 @@ async def _build_judge_messages(user_prompt):
 
     drafts = ""
     for model_name, content in results:
-        if content.startswith("❌ Brain"):
+        if not content or content.startswith("❌ Brain"):
             continue
         drafts += f"\n\n--- RESPONSE FROM {model_name} ---\n{content}"
 
@@ -84,4 +84,4 @@ async def kodo_non_stream(user_prompt):
         model="nvidia/nemotron-3.5-super-vl:free",
         messages=messages, timeout=120.0,
     )
-    return response
+    return response.choices[0].message.content or ""

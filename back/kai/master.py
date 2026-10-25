@@ -1,4 +1,5 @@
 import os
+import re
 import json
 import asyncio
 from .kodo import kodo_non_stream
@@ -46,7 +47,22 @@ INTERNAL_TOOLS = [
     }
 ]
 
+
+def fill(o, store):
+    if isinstance(o, str):
+        return re.sub(
+            r"\{\{?\s*research\s*\}?\}",
+            lambda m: store.get("research", m.group(0)),
+            o,
+        )
+    if isinstance(o, dict):
+        return {k: fill(v, store) for k, v in o.items()}
+    if isinstance(o, list):
+        return [fill(v, store) for v in o]
+    return o
+
 async def run_master_agentic_loop(prompt, mpm_manager):
+    store = {}
     all_servers = ["github", "canva", "workspace"]
     mcp_tools = await mpm_manager.fetch_tools_for_selected(selected_server_names=all_servers)
     
@@ -77,17 +93,23 @@ async def run_master_agentic_loop(prompt, mpm_manager):
 
         for tool_call in message.tool_calls:
             tool_name = tool_call.function.name
-            tool_args = json.loads(tool_call.function.arguments)
+            tool_args = fill(json.loads(tool_call.function.arguments or "{}"), store)
 
             print(f"🛠️ Master Agent invoking tool: {tool_name} | Args: {tool_args}")
 
             tool_result = ""
             try:
                 if tool_name == "run_deep_research":
-                    tool_result = await kodo_non_stream(tool_args.get(prompt))
+                    text = await kodo_non_stream(tool_args.get("query"))
+                    store["research"] = text      
+                    tool_result = (
+                        f"Research complete ({len(text)} chars) and saved. To use the FULL text in any "
+                        f"tool argument, such as a document's content, write {{{{research}}}} exactly. "
+                        f"Do not retype it.\n\nPreview:\n{text[:800]}"
+                    )
                 
                 elif tool_name == "web_search":
-                    tool_result = await kai_chat(tool_args.get(prompt))
+                    tool_result = await kai_chat(tool_args.get("prompt"))
                 
                 else:
                     server_name = tool_name.split("__")[0] if "__" in tool_name else None
