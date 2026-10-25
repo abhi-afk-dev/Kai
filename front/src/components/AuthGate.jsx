@@ -79,7 +79,7 @@ export default function AuthGate({ children }) {
         <button
           type="submit"
           disabled={busy || !input}
-          style={{ padding: 12, borderRadius: 8, cursor: "pointer" }}
+          style={{ padding: 12, borderRadius: 8, cursor: "pointer", color:"whitesmoke" }}
         >
           {busy ? "Checking..." : "Unlock"}
         </button>
