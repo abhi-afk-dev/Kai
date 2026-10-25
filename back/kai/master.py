@@ -81,7 +81,6 @@ async def run_master_agentic_loop(prompt, mpm_manager):
             messages=messages,
             tools=combined_tools,
             tool_choice="auto",
-            max_tokens=4000,
             timeout=120.0,
         )
         
