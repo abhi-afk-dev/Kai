@@ -49,64 +49,39 @@ async def brain_plug(model, web_research, prompt: str):
     except Exception as e:
         return model, f"❌ Brain ({model}) encountered an error: {e}"
 
-async def kodo(user_prompt):
+async def _build_judge_messages(user_prompt):
     web_research = await kai_chat(user_prompt, system_instruction=web_instruction)
     valid_models = [m for m in get_model_config().values() if m is not None]
-    tasks = [brain_plug(model, web_research, user_prompt) for model in valid_models]
-    results = await asyncio.gather(*tasks)
+    results = await asyncio.gather(*[brain_plug(m, web_research, user_prompt) for m in valid_models])
 
-    worker_compilations = ""
+    drafts = ""
     for model_name, content in results:
-        worker_compilations += f"\n\n--- RESPONSE FROM {model_name} ---\n{content}"
+        if content.startswith("❌ Brain"):
+            continue
+        drafts += f"\n\n--- RESPONSE FROM {model_name} ---\n{content}"
 
-    messages = [
+    return [
         {"role": "system", "content": judge},
-        {
-            "role": "user",
-            "content": f"[ORIGINAL PROMPT]:\n{user_prompt}\n\n[DRAFT RESPONSES TO EVALUATE]:{worker_compilations}",
-        },
+        {"role": "user", "content": f"[ORIGINAL PROMPT]:\n{user_prompt}\n\n[DRAFT RESPONSES TO EVALUATE]:{drafts}"},
     ]
 
-    
+
+async def kodo(user_prompt):
+    messages = await _build_judge_messages(user_prompt)
     stream = await client.chat.completions.create(
         model="nvidia/nemotron-3.5-super-vl:free",
-        messages=messages,
-        stream=True,
-        max_tokens=8000,
-        timeout=120.0,
+        messages=messages, stream=True, max_tokens=8000, timeout=120.0,
     )
     async for chunk in stream:
         delta = chunk.choices[0].delta.content
         if delta:
             yield delta
 
+
 async def kodo_non_stream(user_prompt):
-    web_research = await kai_chat(user_prompt, system_instruction=web_instruction)
-    valid_models = [m for m in get_model_config().values() if m is not None]
-    tasks = [brain_plug(model, web_research, user_prompt) for model in valid_models]
-    results = await asyncio.gather(*tasks)
-
-    worker_compilations = ""
-    for model_name, content in results:
-        worker_compilations += f"\n\n--- RESPONSE FROM {model_name} ---\n{content}"
-
-    messages = [
-        {"role": "system", "content": judge},
-        {
-            "role": "user",
-            "content": f"[ORIGINAL PROMPT]:\n{user_prompt}\n\n[DRAFT RESPONSES TO EVALUATE]:{worker_compilations}",
-        },
-    ]
-
-    
+    messages = await _build_judge_messages(user_prompt)
     response = await client.chat.completions.create(
         model="nvidia/nemotron-3.5-super-vl:free",
-        messages=messages,
-        max_tokens=8000,
-        timeout=120.0,
+        messages=messages, max_tokens=8000, timeout=120.0,
     )
-    message = response.choices[0].message
-    return message
-
-
-
+    return response.choices[0].message.content
