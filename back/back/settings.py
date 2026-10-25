@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from corsheaders.defaults import default_headers
 
 load_dotenv()
+CORS_ALLOW_HEADERS = list(default_headers) + ["x-kai-key"]
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 OPEN_API_KEY = os.getenv("OPEN_API_KEY")
@@ -26,7 +27,12 @@ ALLOWED_HOSTS = [
     'kai-backend-production-0b2a.up.railway.app'
 ]
 
-CORS_ALLOW_HEADERS = list(default_headers) + ["x-kai-key"]
+
+CORS_ALLOWED_ORIGINS = [
+    "https://www.kuro.run",
+    "https://kuro.run",
+    "http://localhost:5173",
+]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -58,11 +64,11 @@ CHANNEL_LAYERS = {
 }
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
