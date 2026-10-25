@@ -95,7 +95,7 @@ async def run_master_agentic_loop(prompt, mpm_manager):
         print(f"🔄 Master Loop Iteration [{step + 1}/10]")
         
         response = await client.chat.completions.create(
-            model="nvidia/nemotron-3.5-super-vl:free",
+            model="thinkingmachines/inkling-small:free",
             messages=messages,
             tools=combined_tools,
             tool_choice="auto",
