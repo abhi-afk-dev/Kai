@@ -151,10 +151,7 @@ const aiMdComponents = {
 
 const userMdComponents = {
   h1: ({ node, ...props }) => (
-    <h1
-      className="text-lg sm:text-xl font-bold mb-3 font-sans"
-      {...props}
-    />
+    <h1 className="text-lg sm:text-xl font-bold mb-3 font-sans" {...props} />
   ),
   h2: ({ node, ...props }) => (
     <h2
@@ -186,21 +183,9 @@ const userMdComponents = {
       {...props}
     />
   ),
-  li: ({ node, ...props }) => (
-    <li className=" font-sans" {...props} />
-  ),
-  strong: ({ node, ...props }) => (
-    <strong
-      className="font-bold "
-      {...props}
-    />
-  ),
-  em: ({ node, ...props }) => (
-    <em
-      className="italic opacity-80"
-      {...props}
-    />
-  ),
+  li: ({ node, ...props }) => <li className=" font-sans" {...props} />,
+  strong: ({ node, ...props }) => <strong className="font-bold " {...props} />,
+  em: ({ node, ...props }) => <em className="italic opacity-80" {...props} />,
   code: ({ node, inline, ...props }) =>
     inline ? (
       <code
@@ -262,6 +247,7 @@ const AgentResponse = ({ message }) => {
 
 function Chat() {
   const bottomRef = useRef(null);
+  const [keyboardOffset, setKeyboardOffset] = useState(0);
 
   const messages = useKaiStore((s) => s.messages);
   const isLoading = useKaiStore((s) => s.isLoading);
@@ -273,10 +259,29 @@ function Chat() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages.length]);
 
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.visualViewport) return;
+
+    const handleResize = () => {
+      const viewport = window.visualViewport;
+      const offset = window.innerHeight - viewport.height - viewport.offsetTop;
+      setKeyboardOffset(offset > 0 ? offset : 0);
+    };
+
+    window.visualViewport.addEventListener("resize", handleResize);
+    window.visualViewport.addEventListener("scroll", handleResize);
+
+    return () => {
+      window.visualViewport?.removeEventListener("resize", handleResize);
+      window.visualViewport?.removeEventListener("scroll", handleResize);
+    };
+  }, []);
+
   const handleGenerate = (inputText) => {
     if (!inputText?.trim()) return;
     sendMessage(inputText);
   };
+
   return (
     <div className="w-full jet h-full relative flex flex-col">
       <div className="flex-1 w-full overflow-y-auto custom-scrollbar p-3 sm:p-6 flex flex-col items-center gap-6 sm:gap-8 pb-32 sm:pb-36">
@@ -369,9 +374,9 @@ function Chat() {
         </div>
       </div>
       <div
-        className="fixed bottom-0 left-0 right-0 flex justify-center py-3 sm:py-5 px-3 sm:px-0 w-full z-20 bg-gradient-to-t from-[var(--app-bg)] via-[var(--app-bg)]/90 to-transparent backdrop-blur-sm"
+        className="fixed left-0 right-0 flex justify-center py-3 sm:py-5 px-3 sm:px-0 w-full z-20 bg-gradient-to-t from-[var(--app-bg)] via-[var(--app-bg)]/90 to-transparent backdrop-blur-sm transition-[bottom] duration-100"
         style={{
-          paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom, 0px))",
+          bottom: `${keyboardOffset}px`,
         }}
       >
         <Prompter

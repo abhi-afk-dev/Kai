@@ -2,7 +2,6 @@ import "../App.css";
 import Header from "../components/Header";
 import Chat from "../components/Chat";
 
-
 export default function Home() {
   return (
     <div className="relative h-screen w-full bg-[var(--app-panel)] overflow-hidden">
@@ -21,7 +20,9 @@ export default function Home() {
       />
 
       <div className="relative z-10 flex flex-col h-full">
-        <Header />
+        <div className="sticky top-0">
+          <Header />
+        </div>
         <Chat />
       </div>
     </div>
