@@ -61,15 +61,33 @@ def fill(o, store):
         return [fill(v, store) for v in o]
     return o
 
+
 async def run_master_agentic_loop(prompt, mpm_manager):
     store = {}
-    all_servers = ["github", "canva", "workspace"]
-    mcp_tools = await mpm_manager.fetch_tools_for_selected(selected_server_names=all_servers)
-    
+    # all_servers = ["github", "canva", "workspace"]
+    servers = ["workspace"]
+    p = prompt.lower()
+    if "canva" in p or "design" in p: servers.append("canva")
+    if "github" in p or "repo" in p: servers.append("github")
+
+    mcp_tools = await mpm_manager.fetch_tools_for_selected(selected_server_names=servers)
     combined_tools = mcp_tools + INTERNAL_TOOLS
 
+    system = KAI_MASTER_AGENT_INSTRUCTION
+
+    if "research" in p:
+        text = await kodo_non_stream(prompt)
+        store["research"] = text
+        combined_tools = [t for t in combined_tools if t["function"]["name"] != "run_deep_research"]
+        system += (
+            f"\n\nResearch is finished and saved ({len(text)} chars). Preview:\n{text[:800]}\n\n"
+            "Do NOT research again. To put the full text in a document, set its content to "
+            "{{research}} exactly and always give the document a short title. "
+            "Never retype the research. After creating the doc, reply with the link."
+        )
+
     messages = [
-        {"role": "system", "content": KAI_MASTER_AGENT_INSTRUCTION},
+        {"role": "system", "content": system},
         {"role": "user", "content": prompt},
     ]
 
@@ -77,7 +95,7 @@ async def run_master_agentic_loop(prompt, mpm_manager):
         print(f"🔄 Master Loop Iteration [{step + 1}/10]")
         
         response = await client.chat.completions.create(
-            model="recursive/flint-v1.0:free",
+            model="nvidia/nemotron-3.5-super-vl:free",
             messages=messages,
             tools=combined_tools,
             tool_choice="auto",
