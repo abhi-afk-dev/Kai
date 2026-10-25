@@ -13,8 +13,9 @@ export const setKey = (k) => localStorage.setItem("kai_key", k);
 export const clearKey = () => localStorage.removeItem("kai_key");
 
 export async function verifyKey(key) {
+  const endpoint = `${api.defaults.baseURL}/auth/`;
   try {
-    const res = await fetch(`${API_BASE}/auth/`, {
+    const res = await fetch(endpoint, {
       method: "POST",
       headers: { "X-Kai-Key": key },
     });
