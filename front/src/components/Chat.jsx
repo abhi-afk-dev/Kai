@@ -368,7 +368,7 @@ function Chat() {
           <div ref={bottomRef} />
         </div>
       </div>
-      <div className="fixed bottom-0 left-0 right-0 flex justify-center py-3 sm:py-5 px-3 sm:px-0 w-full z-20 bg-gradient-to-t from-[var(--app-bg)] via-[var(--app-bg)]/90 to-transparent backdrop-blur-sm">
+      <div className="sticky bottom-0 left-0 right-0 flex justify-center py-3 sm:py-5 px-3 sm:px-0 w-full z-20 bg-gradient-to-t from-[var(--app-bg)] via-[var(--app-bg)]/90 to-transparent backdrop-blur-sm">
         <Prompter
           isLoading={isLoading}
           onStop={() => stopMessage()}
