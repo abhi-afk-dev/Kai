@@ -84,10 +84,10 @@ async def run_master_agentic_loop(prompt, mpm_manager):
             tool_result = ""
             try:
                 if tool_name == "run_deep_research":
-                    tool_result = await kodo_non_stream(tool_args.get("query"))
+                    tool_result = await kodo_non_stream(tool_args.get(prompt))
                 
                 elif tool_name == "web_search":
-                    tool_result = await kai_chat(tool_args.get("prompt"))
+                    tool_result = await kai_chat(tool_args.get(prompt))
                 
                 else:
                     server_name = tool_name.split("__")[0] if "__" in tool_name else None

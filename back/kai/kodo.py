@@ -70,18 +70,18 @@ async def kodo(user_prompt):
     messages = await _build_judge_messages(user_prompt)
     stream = await client.chat.completions.create(
         model="nvidia/nemotron-3.5-super-vl:free",
-        messages=messages, stream=True, max_tokens=8000, timeout=120.0,
+        messages=messages, stream=True, timeout=120.0,
     )
     async for chunk in stream:
         delta = chunk.choices[0].delta.content
         if delta:
             yield delta
 
-
 async def kodo_non_stream(user_prompt):
+    print("running the research agent")
     messages = await _build_judge_messages(user_prompt)
     response = await client.chat.completions.create(
         model="nvidia/nemotron-3.5-super-vl:free",
-        messages=messages, max_tokens=8000, timeout=120.0,
+        messages=messages, timeout=120.0,
     )
-    return response.choices[0].message.content
+    return response
