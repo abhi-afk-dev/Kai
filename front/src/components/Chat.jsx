@@ -152,64 +152,64 @@ const aiMdComponents = {
 const userMdComponents = {
   h1: ({ node, ...props }) => (
     <h1
-      className="text-lg sm:text-xl font-bold text-[var(--app-accent-contrast)] mb-3 font-sans"
+      className="text-lg sm:text-xl font-bold mb-3 font-sans"
       {...props}
     />
   ),
   h2: ({ node, ...props }) => (
     <h2
-      className="text-base sm:text-lg font-bold text-[var(--app-accent-contrast)] mb-2 mt-3 font-sans"
+      className="text-base sm:text-lg font-bold mb-2 mt-3 font-sans"
       {...props}
     />
   ),
   h3: ({ node, ...props }) => (
     <h3
-      className="text-sm sm:text-base font-bold text-[var(--app-accent-contrast)] mb-1 mt-2 font-sans opacity-90"
+      className="text-sm sm:text-base font-bold mb-1 mt-2 font-sans opacity-90"
       {...props}
     />
   ),
   p: ({ node, ...props }) => (
     <p
-      className="text-base text-[var(--app-accent-contrast)] leading-relaxed mb-2 last:mb-0 font-sans"
+      className="text-base leading-relaxed mb-2 last:mb-0 font-sans"
       {...props}
     />
   ),
   ul: ({ node, ...props }) => (
     <ul
-      className="list-disc list-outside ml-5 mb-2 space-y-1 font-sans text-base text-[var(--app-accent-contrast)]"
+      className="list-disc list-outside ml-5 mb-2 space-y-1 font-sans text-base"
       {...props}
     />
   ),
   ol: ({ node, ...props }) => (
     <ol
-      className="list-decimal list-outside ml-5 mb-2 space-y-1 font-sans text-base text-[var(--app-accent-contrast)]"
+      className="list-decimal list-outside ml-5 mb-2 space-y-1 font-sans text-base "
       {...props}
     />
   ),
   li: ({ node, ...props }) => (
-    <li className="text-[var(--app-accent-contrast)] font-sans" {...props} />
+    <li className=" font-sans" {...props} />
   ),
   strong: ({ node, ...props }) => (
     <strong
-      className="font-bold text-[var(--app-accent-contrast)]"
+      className="font-bold "
       {...props}
     />
   ),
   em: ({ node, ...props }) => (
     <em
-      className="italic text-[var(--app-accent-contrast)] opacity-80"
+      className="italic opacity-80"
       {...props}
     />
   ),
   code: ({ node, inline, ...props }) =>
     inline ? (
       <code
-        className="px-1.5 py-0.5 rounded-md text-sm font-mono text-[var(--app-accent-contrast)] bg-[var(--app-overlay)] border border-[var(--app-border)] break-words"
+        className="px-1.5 py-0.5 rounded-md text-sm font-mono bg-[var(--app-overlay)] border border-[var(--app-border)] break-words"
         {...props}
       />
     ) : (
       <code
-        className="block p-4 rounded-md text-sm font-mono text-[var(--app-accent-contrast)] bg-[var(--app-overlay)] border border-[var(--app-border)] overflow-x-auto shadow-inner"
+        className="block p-4 rounded-md text-sm font-mono bg-[var(--app-overlay)] border border-[var(--app-border)] overflow-x-auto shadow-inner"
         {...props}
       />
     ),
@@ -222,13 +222,13 @@ const userMdComponents = {
   ),
   blockquote: ({ node, ...props }) => (
     <blockquote
-      className="border-l-[4px] border-[var(--app-accent-contrast)]/30 pl-3 my-2 text-[var(--app-accent-contrast)] opacity-90 italic font-sans"
+      className="border-l-[4px] border-[var(--app-accent-contrast)]/30 pl-3 my-2 opacity-90 italic font-sans"
       {...props}
     />
   ),
   a: ({ node, ...props }) => (
     <a
-      className="text-[var(--app-accent-contrast)] font-medium underline hover:opacity-70 transition-opacity break-words"
+      className="font-medium underline hover:opacity-70 transition-opacity break-words"
       target="_blank"
       rel="noopener noreferrer"
       {...props}
@@ -248,7 +248,7 @@ const AgentResponse = ({ message }) => {
 
   return (
     <div className="flex flex-col gap-3 w-full px-1 sm:px-2 lg:px-0 lg:max-w-5xl animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="bg-[var(--app-panel)/90] border border-[var(--app-border)] p-2 sm:p-2 shadow-lg rounded-md">
+      <div className="border border-[var(--app-border)] p-2 sm:p-2 shadow-lg rounded-md">
         <ReactMarkdown
           components={aiMdComponents}
           remarkPlugins={remarkPlugins}
@@ -308,7 +308,7 @@ function Chat() {
                         alt="User upload"
                       />
                     )}
-                    <div className="bg-[var(--app-accent)/90] text-[var(--app-accent-contrast)] px-5 py-1.5 sm:px-6 sm:py-2 text-base shadow-lg rounded-md break-words w-full">
+                    <div className="border border-[var(--app-border)] text-[var(--app-accent-contrast)] px-5 py-1.5 sm:px-6 sm:py-2 text-base shadow-lg rounded-md break-words w-full">
                       <ReactMarkdown components={userMdComponents}>
                         {normalizeContent(msg.content)}
                       </ReactMarkdown>
