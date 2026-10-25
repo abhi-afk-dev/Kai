@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+from corsheaders.defaults import default_headers
 
 load_dotenv()
 
@@ -24,6 +25,8 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'kai-backend-production-0b2a.up.railway.app'
 ]
+
+CORS_ALLOW_HEADERS = list(default_headers) + ["x-kai-key"]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

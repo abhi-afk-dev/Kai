@@ -19,5 +19,6 @@ from django.urls import path
 from kai import views
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("auth/", views.check_auth),
     path('send/', views.chat_stream_view),
 ]
