@@ -80,7 +80,7 @@ function Prompter({
           }}
           rows={1}
           placeholder="Tell me bud..."
-          className="flex-1 min-w-0 max-h-28 sm:max-h-[200px] bg-transparent border-none outline-none text-[var(--app-text)] placeholder-[var(--app-text-muted)] text-base sm:text-lg py-3 sm:py-4 resize-none overflow-y-auto custom-scrollbar2"
+          className="flex-1 min-w-0 max-h-28 sm:max-h-[200px] bg-transparent border-none outline-none text-[var(--app-text)] placeholder-[var(--app-text-muted)] text-base sm:text-md py-3 sm:py-4 resize-none overflow-y-auto custom-scrollbar2"
           disabled={isLoading}
         />
 

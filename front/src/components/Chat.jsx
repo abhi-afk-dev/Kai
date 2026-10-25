@@ -248,7 +248,7 @@ const AgentResponse = ({ message }) => {
 
   return (
     <div className="flex flex-col gap-3 w-full px-1 sm:px-2 lg:px-0 lg:max-w-5xl animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="bg-[var(--app-panel)] border border-[var(--app-border)] p-4 sm:p-5 shadow-lg rounded-md">
+      <div className="bg-[var(--app-panel)]/90 border border-[var(--app-border)] p-4 sm:p-5 shadow-lg rounded-md">
         <ReactMarkdown
           components={aiMdComponents}
           remarkPlugins={remarkPlugins}
@@ -308,7 +308,7 @@ function Chat() {
                         alt="User upload"
                       />
                     )}
-                    <div className="bg-[var(--app-accent)] text-[var(--app-accent-contrast)] px-5 py-3 sm:px-6 sm:py-4 text-base shadow-lg rounded-md break-words w-full">
+                    <div className="bg-[var(--app-accent)]/90 text-[var(--app-accent-contrast)] px-5 py-1.5 sm:px-6 sm:py-2 text-base shadow-lg rounded-md break-words w-full">
                       <ReactMarkdown components={userMdComponents}>
                         {normalizeContent(msg.content)}
                       </ReactMarkdown>
