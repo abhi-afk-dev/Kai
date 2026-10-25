@@ -1,11 +1,10 @@
 import os
 import json
 import asyncio
+from .kodo import kodo_non_stream
+from .conv import kai_chat
 from openai import AsyncOpenAI
 from dotenv import load_dotenv
-
-from .kodo import kodo
-from .conv import kai_chat
 from .mcp_server import UnifiedMCPManager
 from .instructions import KAI_MASTER_AGENT_INSTRUCTION
 
@@ -79,13 +78,13 @@ async def run_master_agentic_loop(prompt, mpm_manager):
         for tool_call in message.tool_calls:
             tool_name = tool_call.function.name
             tool_args = json.loads(tool_call.function.arguments)
-            
+
             print(f"🛠️ Master Agent invoking tool: {tool_name} | Args: {tool_args}")
-            
+
             tool_result = ""
             try:
                 if tool_name == "run_deep_research":
-                    tool_result = await kodo(tool_args.get("query"))
+                    tool_result = await kodo_non_stream(tool_args.get("query"))
                 
                 elif tool_name == "web_search":
                     tool_result = await kai_chat(tool_args.get("prompt"))
