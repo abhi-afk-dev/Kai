@@ -93,12 +93,13 @@ async def run_master_agentic_loop(prompt, mpm_manager):
 
         for tool_call in message.tool_calls:
             tool_name = tool_call.function.name
-            tool_args = fill(json.loads(tool_call.function.arguments or "{}"), store)
 
-            print(f"🛠️ Master Agent invoking tool: {tool_name} | Args: {tool_args}")
 
             tool_result = ""
             try:
+                tool_args = fill(json.loads(tool_call.function.arguments or "{}"), store)
+                print(f"🛠️ Master Agent invoking tool: {tool_name} | Args: {str(tool_args)[:500]}")
+
                 if tool_name == "run_deep_research":
                     text = await kodo_non_stream(tool_args.get("query"))
                     store["research"] = text      
