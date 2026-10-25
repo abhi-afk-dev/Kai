@@ -41,9 +41,6 @@ export async function streamChatResponse(prompt, onChunk, signal) {
     const response = await fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json", "X-Kai-Key": getKey() },
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify({ prompt }),
       signal,
     });
