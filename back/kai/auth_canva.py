@@ -38,23 +38,6 @@ async def main():
 
             loop.call_soon_threadsafe(fut.set_result, OAuthResult(code, state, iss))
 
-        @asynccontextmanager
-        async def _open_session(self, config):
-            if config["type"] == "http":
-                async with httpx2.AsyncClient(
-                    auth=config.get("auth"),
-                    headers=config.get("headers") or None,
-                    follow_redirects=True,
-                    timeout=30.0,
-                ) as http_client:
-                    async with streamable_http_client(
-                        config["url"], http_client=http_client
-                    ) as streams:
-                        async with ClientSession(streams[0], streams[1]) as session:
-                            await session.initialize()
-                            yield session
-                return
-
         def log_message(self, *a):
             pass
 

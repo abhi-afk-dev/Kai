@@ -3,7 +3,7 @@ set -e
 mkdir -p "$MCP_AUTH_DIR" "$WORKSPACE_MCP_CREDENTIALS_DIR"
 
 # Seed Canva tokens only if not already on the volume
-if [ -n "$CANVA_AUTH_B64" ] && [ ! -f "$MCP_AUTH_DIR/canva.json" ]; then
+if [ -n "$CANVA_AUTH_B64" ] && { [ ! -f "$MCP_AUTH_DIR/canva.json" ] || [ "$RESEED_CANVA" = "1" ]; }; then
   echo "$CANVA_AUTH_B64" | base64 -d > "$MCP_AUTH_DIR/canva.json"
   echo "Seeded Canva auth"
 fi
