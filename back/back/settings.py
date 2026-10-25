@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 from corsheaders.defaults import default_headers
 
 load_dotenv()
-CORS_ALLOW_HEADERS = list(default_headers) + ["x-kai-key"]
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 OPEN_API_KEY = os.getenv("OPEN_API_KEY")
@@ -87,14 +86,14 @@ CORS_ALLOW_HEADERS = [
     'user-agent',
     'x-csrftoken',
     'x-requested-with',
-    'x-takumi-auth',
+    'x-kai-key'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173',
     'http://127.0.0.1:5173',
     'https://kai-gray-eight.vercel.app/',
-    'https://kuro.run/'
+    'https://kuro.run/',
     'https://www.kuro.run/',
 ]
 
