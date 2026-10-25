@@ -1,5 +1,6 @@
 import os
 import json
+import time
 from pathlib import Path
 from mcp.client.auth import TokenStorage
 from mcp.shared.auth import OAuthClientInformationFull, OAuthToken
@@ -16,11 +17,21 @@ class FileTokenStorage(TokenStorage):
         self.path.write_text(json.dumps(data))
 
     async def get_tokens(self):
-        d = self._read().get("tokens")
-        return OAuthToken(**d) if d else None
+        d = self._read()
+        t = d.get("tokens")
+        if not t:
+            return None
+        saved_at = d.get("saved_at") or self.path.stat().st_mtime
+        exp = t.get("expires_in")
+        if exp:
+            t = {**t, "expires_in": max(1, int(exp - (time.time() - saved_at)))}
+        return OAuthToken(**t)
 
     async def set_tokens(self, tokens):
-        d = self._read(); d["tokens"] = tokens.model_dump(mode="json"); self._write(d)
+        d = self._read()
+        d["tokens"] = tokens.model_dump(mode="json")
+        d["saved_at"] = time.time()
+        self._write(d)
 
     async def get_client_info(self):
         d = self._read().get("client_info")
