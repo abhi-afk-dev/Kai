@@ -308,7 +308,7 @@ function Chat() {
                         alt="User upload"
                       />
                     )}
-                    <div className="border border-[var(--app-border)] text-[var(--app-accent-contrast)] px-5 py-1.5 sm:px-6 sm:py-2 text-base shadow-lg rounded-md break-words w-full">
+                    <div className="border border-[var(--app-border)] text-white px-5 py-1.5 sm:px-6 sm:py-2 text-base shadow-lg rounded-md break-words w-full">
                       <ReactMarkdown components={userMdComponents}>
                         {normalizeContent(msg.content)}
                       </ReactMarkdown>
