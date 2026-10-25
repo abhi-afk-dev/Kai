@@ -1,6 +1,6 @@
-export default function ChatEmptyState({ onPromptSelect }) {
+export default function ChatEmptyState() {
   return (
-    <div className="flex jet flex-col items-center justify-center min-h-[50vh] sm:min-h-[60vh] text-center px-4 sm:px-6 py-8 select-none">
+    <div className="flex jet flex-col items-center justify-center text-center px-4 sm:px-6 py-8 select-none">
       <h2 className="text-lg sm:text-xl font-semibold text-[var(--app-text)] mb-1.5">
         Death
       </h2>

@@ -247,7 +247,6 @@ const AgentResponse = ({ message }) => {
 
 function Chat() {
   const bottomRef = useRef(null);
-  const [keyboardOffset, setKeyboardOffset] = useState(0);
 
   const messages = useKaiStore((s) => s.messages);
   const isLoading = useKaiStore((s) => s.isLoading);
@@ -258,24 +257,6 @@ function Chat() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages.length]);
-
-  useEffect(() => {
-    if (typeof window === "undefined" || !window.visualViewport) return;
-
-    const handleResize = () => {
-      const viewport = window.visualViewport;
-      const offset = window.innerHeight - viewport.height - viewport.offsetTop;
-      setKeyboardOffset(offset > 0 ? offset : 0);
-    };
-
-    window.visualViewport.addEventListener("resize", handleResize);
-    window.visualViewport.addEventListener("scroll", handleResize);
-
-    return () => {
-      window.visualViewport?.removeEventListener("resize", handleResize);
-      window.visualViewport?.removeEventListener("scroll", handleResize);
-    };
-  }, []);
 
   const handleGenerate = (inputText) => {
     if (!inputText?.trim()) return;
@@ -373,12 +354,7 @@ function Chat() {
           <div ref={bottomRef} />
         </div>
       </div>
-      <div
-        className="fixed left-0 right-0 flex justify-center py-3 sm:py-5 px-3 sm:px-0 w-full z-20 bg-gradient-to-t from-[var(--app-bg)] via-[var(--app-bg)]/90 to-transparent backdrop-blur-sm transition-[bottom] duration-100"
-        style={{
-          bottom: `${keyboardOffset}px`,
-        }}
-      >
+      <div className="sticky bottom-0 left-0 right-0 flex-shrink-0 flex justify-center py-2 sm:py-4 px-3 sm:px-0 w-full z-20 bg-gradient-to-t from-[var(--app-bg)] via-[var(--app-bg)]/90 to-transparent backdrop-blur-sm pb-[max(0.5rem,env(safe-area-inset-bottom))]">
         <Prompter
           isLoading={isLoading}
           onStop={() => stopMessage()}
