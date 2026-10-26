@@ -21,10 +21,17 @@ class FileTokenStorage(TokenStorage):
         t = d.get("tokens")
         if not t:
             return None
-        saved_at = d.get("saved_at") or self.path.stat().st_mtime
+        saved_at = d.get("saved_at")
         exp = t.get("expires_in")
         if exp:
-            t = {**t, "expires_in": max(1, int(exp - (time.time() - saved_at)))}
+            if saved_at is None:
+                remaining = -1
+            else:
+                remaining = int(exp - (time.time() - saved_at))
+                if remaining <= 0:
+                    remaining = -1
+            t = {**t, "expires_in": remaining}
+        print(f"🔑 canva tokens loaded, expires_in={t.get('expires_in')}")
         return OAuthToken(**t)
 
     async def set_tokens(self, tokens):
