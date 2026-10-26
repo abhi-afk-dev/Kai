@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from contextlib import AsyncExitStack
 from mcp.client.sse import sse_client
 from mcp.client.streamable_http import streamable_http_client
+from instructions import Model
 
 load_dotenv()
 

@@ -7,7 +7,7 @@ from .conv import kai_chat
 from openai import AsyncOpenAI
 from dotenv import load_dotenv
 from .mcp_server import UnifiedMCPManager
-from .instructions import KAI_MASTER_AGENT_INSTRUCTION
+from .instructions import KAI_MASTER_AGENT_INSTRUCTION, Model
 
 load_dotenv()
 
@@ -95,7 +95,7 @@ async def run_master_agentic_loop(prompt, mpm_manager):
         print(f"🔄 Master Loop Iteration [{step + 1}/10]")
         
         response = await client.chat.completions.create(
-            model="nvidia/nemotron-3-ultra-550b-a55b:free",
+            model="dots-studio/dots-3-note-preview:free",
             messages=messages,
             tools=combined_tools,
             tool_choice="auto",
