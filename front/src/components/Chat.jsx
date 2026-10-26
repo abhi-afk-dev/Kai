@@ -271,7 +271,7 @@ function Chat() {
   };
 
   return (
-    <div className="absolute inset-0 w-full jet flex flex-col bg-[var(--app-bg)] overflow-hidden">
+    <div className="w-full h-full jet flex flex-col bg-[var(--app-bg)] overflow-hidden">
       <div
         ref={scrollContainerRef}
         className="flex-1 w-full overflow-y-auto custom-scrollbar p-3 sm:p-6"
