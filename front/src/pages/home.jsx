@@ -4,13 +4,19 @@ import Header from "../components/Header";
 import Chat from "../components/Chat";
 
 export default function Home() {
-  const [viewportHeight, setViewportHeight] = useState("100vh");
+  const [viewportStyle, setViewportStyle] = useState({
+    height: "100vh",
+    top: "0px",
+  });
 
   useEffect(() => {
     if (typeof window === "undefined" || !window.visualViewport) return;
 
     const handleResize = () => {
-      setViewportHeight(`${window.visualViewport.height}px`);
+      setViewportStyle({
+        height: `${window.visualViewport.height}px`,
+        top: `${window.visualViewport.offsetTop}px`,
+      });
       window.scrollTo(0, 0);
     };
 
@@ -27,8 +33,11 @@ export default function Home() {
 
   return (
     <div
-      className="fixed top-0 left-0 w-full bg-[var(--app-panel)] flex flex-col overflow-hidden"
-      style={{ height: viewportHeight }}
+      className="fixed left-0 w-full bg-[var(--app-panel)] flex flex-col overflow-hidden"
+      style={{
+        height: viewportStyle.height,
+        top: viewportStyle.top,
+      }}
     >
       <div
         aria-hidden="true"
