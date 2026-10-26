@@ -271,12 +271,12 @@ function Chat() {
   };
 
   return (
-    <div className="w-full h-full jet flex flex-col bg-[var(--app-bg)] overflow-hidden">
+    <div className="w-full h-full flex flex-col min-h-0">
       <div
         ref={scrollContainerRef}
         className="flex-1 w-full overflow-y-auto custom-scrollbar p-3 sm:p-6"
       >
-        <div className="flex text-[var(--app-text)] flex-col w-full max-w-7xl mx-auto gap-6 sm:gap-8 pb-4">
+        <div className="flex text-[var(--app-text)] flex-col w-full max-w-7xl mx-auto gap-6 sm:gap-8">
           {messages.length === 0 && !isLoading && (
             <div className="mt-10 w-full flex items-center justify-center">
               <ChatEmptyState
@@ -365,11 +365,10 @@ function Chat() {
         </div>
       </div>
 
-      <div className="flex-shrink-0 w-full z-20 bg-gradient-to-t from-[var(--app-bg)] via-[var(--app-bg)]/95 to-transparent backdrop-blur-sm pt-4 pb-[max(1rem,env(safe-area-inset-bottom))] px-3 sm:px-6">
-        <div className="w-full max-w-5xl mx-auto flex justify-center">
+      <div className="flex-shrink-0 w-full z-20 bg-gradient-to-t from-[var(--app-bg)] via-[var(--app-bg)]/95 to-transparent backdrop-blur-sm pt-2 pb-[env(safe-area-inset-bottom)] px-3 sm:px-6">
+        <div className="w-full max-w-5xl mx-auto flex justify-center pb-2">
           <Prompter
             isLoading={isLoading}
-            isBusy={false}
             onStop={() => stopMessage()}
             onSubmit={handleGenerate}
             onFocus={scrollToBottom}

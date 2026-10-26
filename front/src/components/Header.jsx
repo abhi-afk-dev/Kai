@@ -21,7 +21,7 @@ function Header() {
   };
 
   return (
-    <div className="flex jet border-b border-[var(--app-border)] w-full items-center text-[var(--app-text)] hover:bg-[var(--app-hover)] cursor-pointer transition-all duration-300 select-none justify-between py-4 px-20">
+    <div className="flex jet border-b border-[var(--app-border)] w-full items-center text-[var(--app-text)] hover:bg-[var(--app-hover)] cursor-pointer transition-all duration-300 select-none justify-between py-4 px-10">
       <div className="bungee-text text-[var(--app-text)] text-2xl flex items-center gap-2">
         <span className="w-[26px] h-[26px] flex items-center justify-center border-2 border-[var(--app-text)] rounded-md text-[var(--app-text)] text-[13px] font-extrabold">
           魁
