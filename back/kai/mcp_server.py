@@ -1,4 +1,5 @@
 import os
+import time
 import traceback
 from dotenv import load_dotenv
 from mcp.client.sse import sse_client
@@ -23,6 +24,12 @@ def _leaf_exceptions(exc):
     else:
         yield exc
 
+class CanvaProvider(OAuthClientProvider):
+    async def _initialize(self):
+        await super()._initialize()
+        if self.context.current_tokens:
+            self.context.token_expiry_time = self.context.storage.expiry_epoch()
+            print(f"🔑 canva expiry set, seconds left: {int(self.context.token_expiry_time - time.time())}")
 
 class UnifiedMCPManager:
     def __init__(self):
@@ -36,7 +43,7 @@ class UnifiedMCPManager:
         async def no_callback():
             raise RuntimeError("Canva isn't authorized. Run: python -m kai.auth_canva")
 
-        return OAuthClientProvider(
+        return CanvaProvider(
             server_url="https://mcp.canva.com/mcp",
             client_metadata=OAuthClientMetadata(
                 client_name="Kai",
