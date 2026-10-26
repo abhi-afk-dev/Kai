@@ -247,6 +247,7 @@ const AgentResponse = ({ message }) => {
 
 function Chat() {
   const bottomRef = useRef(null);
+  const scrollContainerRef = useRef(null);
 
   const messages = useKaiStore((s) => s.messages);
   const isLoading = useKaiStore((s) => s.isLoading);
@@ -254,8 +255,14 @@ function Chat() {
   const sendMessage = useKaiStore((s) => s.sendMessage);
   const stopMessage = useKaiStore((s) => s.stopMessage);
 
+  const scrollToBottom = () => {
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+    }
+  };
+
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    scrollToBottom();
   }, [messages.length]);
 
   const handleGenerate = (inputText) => {
@@ -264,15 +271,16 @@ function Chat() {
   };
 
   return (
-    <div className="w-full jet h-full relative flex flex-col">
-      <div className="flex-1 w-full overflow-y-auto custom-scrollbar p-3 sm:p-6 flex flex-col items-center gap-6 sm:gap-8 pb-32 sm:pb-36">
-        <div className="flex text-[var(--app-text)] flex-col w-full max-w-7xl gap-6 sm:gap-8">
+    <div className="absolute inset-0 w-full jet flex flex-col bg-[var(--app-bg)] overflow-hidden">
+      <div
+        ref={scrollContainerRef}
+        className="flex-1 w-full overflow-y-auto custom-scrollbar p-3 sm:p-6"
+      >
+        <div className="flex text-[var(--app-text)] flex-col w-full max-w-7xl mx-auto gap-6 sm:gap-8 pb-4">
           {messages.length === 0 && !isLoading && (
-            <div className="h-full w-full flex items-center justify-center">
+            <div className="mt-10 w-full flex items-center justify-center">
               <ChatEmptyState
-                onPromptSelect={(prompt) =>
-                  handleGenerate(prompt, undefined, undefined, undefined)
-                }
+                onPromptSelect={(prompt) => handleGenerate(prompt)}
               />
             </div>
           )}
@@ -353,15 +361,20 @@ function Chat() {
               </div>
             </div>
           )}
-          <div ref={bottomRef} />
+          <div ref={bottomRef} className="h-1" />
         </div>
       </div>
-      <div className="sticky bottom-0 left-0 right-0 flex-shrink-0 flex justify-center py-2 sm:py-4 px-3 sm:px-0 w-full z-20 bg-gradient-to-t from-[var(--app-bg)] via-[var(--app-bg)]/90 to-transparent backdrop-blur-sm pb-[max(0.5rem,env(safe-area-inset-bottom))]">
-        <Prompter
-          isLoading={isLoading}
-          onStop={() => stopMessage()}
-          onSubmit={handleGenerate}
-        />
+
+      <div className="flex-shrink-0 w-full z-20 bg-gradient-to-t from-[var(--app-bg)] via-[var(--app-bg)]/95 to-transparent backdrop-blur-sm pt-4 pb-[max(1rem,env(safe-area-inset-bottom))] px-3 sm:px-6">
+        <div className="w-full max-w-5xl mx-auto flex justify-center">
+          <Prompter
+            isLoading={isLoading}
+            isBusy={false}
+            onStop={() => stopMessage()}
+            onSubmit={handleGenerate}
+            onFocus={scrollToBottom}
+          />
+        </div>
       </div>
     </div>
   );
