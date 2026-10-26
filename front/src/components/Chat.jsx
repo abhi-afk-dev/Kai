@@ -365,7 +365,7 @@ function Chat() {
         </div>
       </div>
 
-      <div className="flex-shrink-0 w-full z-20 bg-gradient-to-t from-[var(--app-bg)] via-[var(--app-bg)]/95 to-transparent backdrop-blur-sm pt-2 px-3 sm:px-6">
+      <div className="flex-shrink-0 w-full z-20 bg-gradient-to-t from-[var(--app-panel)] via-[var(--app-panel)]/95 to-transparent backdrop-blur-sm pt-2 pb-[max(16px,env(safe-area-inset-bottom))] px-3 sm:px-6">
         <div className="w-full max-w-5xl mx-auto flex justify-center">
           <Prompter
             isLoading={isLoading}

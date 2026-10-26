@@ -33,3 +33,8 @@
   --app-accent-contrast: #0a0a0a;
 }
 @custom-variant dark (&:where(.dark, .dark *));
+
+html, body {
+  background-color: var(--app-panel);
+  overscroll-behavior-y: none; 
+}
