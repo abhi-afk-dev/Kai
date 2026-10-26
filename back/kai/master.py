@@ -7,7 +7,7 @@ from .conv import kai_chat
 from openai import AsyncOpenAI
 from dotenv import load_dotenv
 from .mcp_server import UnifiedMCPManager
-from .instructions import KAI_MASTER_AGENT_INSTRUCTION, Model
+from .instructions import KAI_MASTER_AGENT_INSTRUCTION
 
 load_dotenv()
 
