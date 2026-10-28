@@ -12,7 +12,7 @@ async def get_decision(criteria, instructions):
     }
     
     payload = {
-        "model": "inception/mercury-decide:free",
+        "model": "respan/span-01-lite",
         "state": "",
         "questions": {
             "routing_choice": {
