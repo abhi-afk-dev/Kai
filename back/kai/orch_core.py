@@ -15,6 +15,11 @@ from .instructions import KAI_CANVA_INSTRUCTION, KAI_GITHUB_INSTRUCTION, KAI_WOR
 
 load_dotenv()
 
+client = AsyncOpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=os.getenv("OPEN_API_KEY"),
+)
+
 EXA_API_KEY = os.getenv("EXA")
 EXA_MCP_URL = (
     f"https://mcp.exa.ai/mcp?exaApiKey={EXA_API_KEY}"
@@ -31,11 +36,6 @@ mcp_manager = UnifiedMCPManager()
         # _mcp_initialized = True
 # 
 
-client = AsyncOpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=os.getenv("OPEN_API_KEY"),
-)
-
 criteria_hands = {
     "web": "Searching the live internet for real-time information, news, or general facts. or Reading, scraping, or extracting text content from a specific URL provided by the user.",
     "research": "Deep technical analysis or multi-model research using Kodo.",
@@ -49,6 +49,7 @@ criteria_orchestrator = {
     "single_tasked": "A focused task restricted to a single domain or tool (e.g., checking GitHub issues, creating a Canva design, reading a Google Doc, running deep research with Kodo or even need something from the web).",
     "master_loop": "A complex, multi-step, or multi-domain compound task that requires combining multiple tools/domains sequentially (e.g., researching a topic then building a Canva presentation, or fetching code from GitHub and pushing docs to Workspace)."
 }
+
 async def single_agent(prompt: str, agent):
 
     if agent == "web":
