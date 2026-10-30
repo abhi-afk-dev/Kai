@@ -38,9 +38,9 @@
 
 
 import asyncio
-from laya import Router
+import laya
 
-router = Router()
+agent = laya.load("convaiinnovations/laya", subfolder="typed-decisions")
 
 async def get_decision(criteria, state):    
     questions = {
@@ -51,6 +51,6 @@ async def get_decision(criteria, state):
         },
     }
 
-    result = await asyncio.to_thread(router.predict, state, questions)
+    result = await asyncio.to_thread(agent.predict, state, questions)
     
     return result["answers"]["routing_choice"]["choice"]
