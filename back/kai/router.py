@@ -37,19 +37,20 @@
 #         return data["answers"]["routing_choice"]["choice"]
 
 
+import asyncio
 from laya import Router
 
 router = Router()
-async def get_decision(criteria, state):
-    state = state,
+
+async def get_decision(criteria, state):    
     questions = {
         "routing_choice": {
             "type": "choice",
-            "instructions": "Which route should this take ?",
+            "instructions": "Which route should this take?",
             "criteria": criteria,
         },
     }
 
-    result = router.predict(state, questions)
+    result = await asyncio.to_thread(router.predict, state, questions)
+    
     return result["answers"]["routing_choice"]["choice"]
-
