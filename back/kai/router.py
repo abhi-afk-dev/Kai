@@ -36,21 +36,19 @@
 #             raise RuntimeError(data["error"])
 #         return data["answers"]["routing_choice"]["choice"]
 
-
 import asyncio
-import laya
+import nanojev
 
-agent = laya.load("convaiinnovations/laya", subfolder="typed-decisions")
+agent = nanojev.load("v0.1")
 
 async def get_decision(criteria, state):    
-    questions = {
-        "routing_choice": {
-            "type": "choice",
-            "instructions": "Which route should this take?",
-            "criteria": criteria,
-        },
-    }
+    instructions = "Which route should this take?"
 
-    result = await asyncio.to_thread(agent.predict, state, questions)
+    probs = await asyncio.to_thread(
+        agent.decide,
+        instructions,  # Question/Instructions
+        criteria,      # List of choices (e.g., ["route_a", "route_b"])
+        state          # Context/State text
+    )
     
-    return result["answers"]["routing_choice"]["choice"]
+    return max(probs, key=probs.get)
