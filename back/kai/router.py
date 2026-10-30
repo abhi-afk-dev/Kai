@@ -46,9 +46,9 @@ async def get_decision(criteria, state):
 
     probs = await asyncio.to_thread(
         agent.decide,
-        instructions,  # Question/Instructions
-        criteria,      # List of choices (e.g., ["route_a", "route_b"])
-        state          # Context/State text
+        instructions,
+        criteria,
+        state
     )
     
     return max(probs, key=probs.get)
