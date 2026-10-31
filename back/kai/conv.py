@@ -100,7 +100,6 @@ async def kai_chat(
                     messages=messages,
                     tools=kai_tools,
                     tool_choice="auto",
-                    max_tokens=2000,
                     timeout=60.0 
                 )
                 message = response.choices[0].message
@@ -161,7 +160,6 @@ async def kai_chat_stream(
                         messages=messages,
                         tools=kai_tools,
                         tool_choice="auto",
-                        max_tokens=2000,
                         timeout=60.0 
                     )
                     message = response.choices[0].message
@@ -173,8 +171,20 @@ async def kai_chat_stream(
                     })
                     
                     if not message.tool_calls:
-                        if message.content:
-                            yield message.content
+                        messages.pop()
+                        stream = await client.chat.completions.create(
+                            model="dots-studio/dots-3-note-preview:free",
+                            messages=messages,
+                            stream=True,
+                            max_tokens=8000,
+                            timeout=60.0,
+                        )
+                        async for chunk in stream:
+                            if not chunk.choices:
+                                continue
+                            delta = chunk.choices[0].delta.content
+                            if delta:
+                                yield delta
                         return
                 
                     for tool_call in message.tool_calls:
