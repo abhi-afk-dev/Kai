@@ -110,63 +110,64 @@ async def single_agent(prompt: str, agent):
 
     yield "Sorry buddy, I couldn't finish that within the step limit."
 
-# async def main(prompt):
-#     await mcp_manager.initialize_all_servers()
-#     mode = await get_decision(criteria_orchestrator, prompt)
-    
-#     if mode == "master_loop":
-#         message = ""
-#         async for chunk in run_master_agentic_loop(prompt, mcp_manager):
-#             yield chunk
-#             message += chunk
-#         print(f"\n--- THIS WILL BE THE MASTER ---\n{message}\n-------------------------------\n")
-
-#     elif mode == "single_tasked":
-#         agent = await get_decision(criteria_hands, prompt)
-
-#         if agent:
-#             message = ""
-#             async for chunk in single_agent(prompt, agent):
-#                 yield chunk
-#                 message += chunk
-#             print(f"\n--- THIS WILL BE THE SINGLE ONE ---\n{message}\n-------------------------------\n")
-
-#         else:
-#             async for chunk in kai_chat_stream(prompt, system_instruction=KAI_CONVERSATIONAL_INSTRUCTION):
-#                 yield chunk
-                
-#     else:
-#         async for chunk in kai_non_web_stream(prompt, system_instruction=KAI_NON_WEB_INSTRUCTION):
-#             yield chunk
-
 async def main(prompt):
-    t0, first, message = time.time(), None, ""
-    try:
-        await mcp_manager.initialize_all_servers()
-        mode = await get_decision(criteria_orchestrator, prompt)
-        print(f"MODE: {mode}")
-
-        if mode == "master_loop":
-            gen = run_master_agentic_loop(prompt, mcp_manager)
-        elif mode == "single_tasked":
-            agent = await get_decision(criteria_hands, prompt)
-            print(f"AGENT: {agent}")
-            gen = (single_agent(prompt, agent) if agent else
-                   kai_chat_stream(prompt, system_instruction=KAI_CONVERSATIONAL_INSTRUCTION))
-        else:
-            gen = kai_non_web_stream(prompt, system_instruction=KAI_NON_WEB_INSTRUCTION)
-
-        async for chunk in gen:
-            if first is None:
-                first = time.time() - t0
-                print(f"FIRST CHUNK after {first:.1f}s")
-            message += chunk
+    await mcp_manager.initialize_all_servers()
+    mode = await get_decision(criteria_orchestrator, prompt)
+    
+    if mode == "master_loop":
+        message = ""
+        async for chunk in run_master_agentic_loop(prompt, mcp_manager):
             yield chunk
-    except asyncio.CancelledError:
-        print("CLIENT DISCONNECTED (proxy or browser closed the stream)")
-        raise
-    except Exception as e:
-        import traceback; traceback.print_exc()
-        yield f"\n⚠️ Error: {type(e).__name__}: {e}"
-    finally:
-        print(f"DONE in {time.time()-t0:.1f}s, {len(message)} chars\n{message[-300:]}")
+            message += chunk
+        print(f"\n--- THIS WILL BE THE MASTER ---\n{message}\n-------------------------------\n")
+
+    elif mode == "single_tasked":
+        agent = await get_decision(criteria_hands, prompt)
+
+        if agent:
+            message = ""
+            async for chunk in single_agent(prompt, agent):
+                yield chunk
+                message += chunk
+            print(f"\n--- THIS WILL BE THE SINGLE ONE ---\n{message}\n-------------------------------\n")
+
+        else:
+            async for chunk in kai_chat_stream(prompt, system_instruction=KAI_CONVERSATIONAL_INSTRUCTION):
+                yield chunk
+                
+    else:
+        async for chunk in kai_non_web_stream(prompt, system_instruction=KAI_NON_WEB_INSTRUCTION):
+            yield chunk
+
+# debugging code
+# async def main(prompt):
+#     t0, first, message = time.time(), None, ""
+#     try:
+#         await mcp_manager.initialize_all_servers()
+#         mode = await get_decision(criteria_orchestrator, prompt)
+#         print(f"MODE: {mode}")
+
+#         if mode == "master_loop":
+#             gen = run_master_agentic_loop(prompt, mcp_manager)
+#         elif mode == "single_tasked":
+#             agent = await get_decision(criteria_hands, prompt)
+#             print(f"AGENT: {agent}")
+#             gen = (single_agent(prompt, agent) if agent else
+#                    kai_chat_stream(prompt, system_instruction=KAI_CONVERSATIONAL_INSTRUCTION))
+#         else:
+#             gen = kai_non_web_stream(prompt, system_instruction=KAI_NON_WEB_INSTRUCTION)
+
+#         async for chunk in gen:
+#             if first is None:
+#                 first = time.time() - t0
+#                 print(f"FIRST CHUNK after {first:.1f}s")
+#             message += chunk
+#             yield chunk
+#     except asyncio.CancelledError:
+#         print("CLIENT DISCONNECTED (proxy or browser closed the stream)")
+#         raise
+#     except Exception as e:
+#         import traceback; traceback.print_exc()
+#         yield f"\n⚠️ Error: {type(e).__name__}: {e}"
+#     finally:
+#         print(f"DONE in {time.time()-t0:.1f}s, {len(message)} chars\n{message[-300:]}")
