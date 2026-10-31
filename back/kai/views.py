@@ -32,4 +32,8 @@ async def chat_stream_view(request):
         async for chunk in run_kai_orchestrator(prompt):
             yield chunk
 
-    return StreamingHttpResponse(response_generator(), content_type="text/plain; charset=utf-8")
+    # return StreamingHttpResponse(response_generator(), content_type="text/plain; charset=utf-8")
+    resp = StreamingHttpResponse(response_generator(), content_type="text/plain; charset=utf-8")
+    resp["Cache-Control"] = "no-cache"
+    resp["X-Accel-Buffering"] = "no"
+    return resp
