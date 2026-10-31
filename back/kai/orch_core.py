@@ -12,6 +12,7 @@ from .router import get_decision
 from .master import run_master_agentic_loop
 from .mcp_server import UnifiedMCPManager
 from .instructions import KAI_CANVA_INSTRUCTION, KAI_GITHUB_INSTRUCTION, KAI_WORKSPACE_INSTRUCTION, KAI_CONVERSATIONAL_INSTRUCTION, KAI_NON_WEB_INSTRUCTION
+from .loop_utils import llm, run_tool, llm_stream
 
 load_dotenv()
 
@@ -77,49 +78,44 @@ async def single_agent(prompt: str, agent):
 
     MAX_STEPS = 5
     for step in range(MAX_STEPS):
-        response = await client.chat.completions.create(
-            model="nvidia/nemotron-3.5-super-vl:free",
-            messages=messages,
-            tools=tools,
-            tool_choice="auto",
-            max_tokens=4000,
-            timeout=120.0,
-        )
-        message = response.choices[0].message
+        try:
+            message = await llm(messages, tools)
+        except Exception as e:
+            yield f"⚠️ The model is unavailable right now ({e}). Please try again."
+            return
 
         if not message.tool_calls:
-            if message.content:
-                yield message.content
+            async for chunk in llm_stream(messages, fallback=message.content or ""):
+                yield chunk
             return
 
         messages.append(message)
 
         for tool_call in message.tool_calls:
             tool_name = tool_call.function.name
+            yield f"🔧 {tool_name.split('__')[-1]}...\n"
             try:
                 tool_args = json.loads(tool_call.function.arguments or "{}")
                 print(f"🛠️ [{agent}] step {step}: {tool_name} {tool_args}")
-                tool_result = await mcp_manager.execute_tool(agent, tool_name, tool_args)
+
+                async def call(n=tool_name, a=tool_args):
+                    return await mcp_manager.execute_tool(agent, n, a)
+
+                tool_result = await run_tool(call, tool_name)
             except Exception as e:
                 tool_result = f"Error executing tool {tool_name}: {e}"
 
-            print(f"   ↳ result: {str(tool_result)[:300]}")
+            messages.append({"role": "tool", "tool_call_id": tool_call.id, "content": str(tool_result)})
 
-            messages.append({
-                "role": "tool",
-                "tool_call_id": tool_call.id,
-                "content": str(tool_result),
-            })
-
-    yield "Sorry, I couldn't finish that within the step limit."
+    yield "Sorry buddy, I couldn't finish that within the step limit."
 
 async def main(prompt):
     await mcp_manager.initialize_all_servers()
     mode = await get_decision(criteria_orchestrator, prompt)
-
+    
     if mode == "master_loop":
-        response = await run_master_agentic_loop(prompt, mcp_manager)
-        yield response
+        async for chunk in run_master_agentic_loop(prompt, mcp_manager):
+            yield chunk
 
     elif mode == "single_tasked":
         agent = await get_decision(criteria_hands, prompt)
