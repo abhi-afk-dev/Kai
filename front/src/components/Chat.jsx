@@ -32,6 +32,95 @@ const normalizeContent = (text) => {
   return out.trim();
 };
 
+const AiCodeBlock = ({ node, inline, className, children, ...props }) => {
+  const [copied, setCopied] = useState(false);
+
+  if (inline) {
+    return (
+      <code
+        className="bg-[var(--app-overlay)] px-1.5 py-0.5 text-sm font-mono text-[var(--app-text-dim)] border border-[var(--app-border)] rounded-md break-words"
+        {...props}
+      >
+        {children}
+      </code>
+    );
+  }
+
+  const textToCopy = String(children).replace(/\n$/, "");
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(textToCopy);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="relative group my-6">
+      <button
+        onClick={handleCopy}
+        className="absolute top-2 right-2 px-2 py-1 text-xs font-sans bg-[var(--app-panel)] border border-[var(--app-border)] rounded-md opacity-0 group-hover:opacity-100 transition-opacity text-[var(--app-text-dim)] hover:text-[var(--app-text)] shadow-sm z-10"
+        title="Copy code"
+      >
+        {copied ? "Copied!" : "Copy"}
+      </button>
+      <pre
+        className="bg-[var(--app-overlay)] border border-[var(--app-border)] overflow-x-auto rounded-md max-w-full p-4 pt-10"
+        style={{ fontFamily: "monospace" }}
+      >
+        <code
+          className="block text-sm font-mono text-[var(--app-text-dim)]"
+          {...props}
+        >
+          {children}
+        </code>
+      </pre>
+    </div>
+  );
+};
+
+const UserCodeBlock = ({ node, inline, className, children, ...props }) => {
+  const [copied, setCopied] = useState(false);
+
+  if (inline) {
+    return (
+      <code
+        className="px-1.5 py-0.5 rounded-md text-sm font-mono bg-[var(--app-overlay)] border border-[var(--app-border)] break-words"
+        {...props}
+      >
+        {children}
+      </code>
+    );
+  }
+
+  const textToCopy = String(children).replace(/\n$/, "");
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(textToCopy);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="relative group my-6">
+      <button
+        onClick={handleCopy}
+        className="absolute top-2 right-2 px-2 py-1 text-xs font-sans bg-[var(--app-panel)] border border-[var(--app-border)] rounded-md opacity-0 group-hover:opacity-100 transition-opacity text-[var(--app-text-dim)] hover:text-[var(--app-text)] shadow-sm z-10"
+        title="Copy code"
+      >
+        {copied ? "Copied!" : "Copy"}
+      </button>
+      <pre
+        className="overflow-x-auto custom-scrollbar max-w-full bg-[var(--app-overlay)] border border-[var(--app-border)] p-4 pt-10 rounded-md shadow-inner"
+        style={{ fontFamily: "monospace" }}
+      >
+        <code className="block text-sm font-mono" {...props}>
+          {children}
+        </code>
+      </pre>
+    </div>
+  );
+};
+
 const aiMdComponents = {
   h1: ({ node, ...props }) => (
     <h1
@@ -208,94 +297,6 @@ const AgentResponse = ({ message }) => {
           {content}
         </ReactMarkdown>
       </div>
-    </div>
-  );
-};
-const AiCodeBlock = ({ node, inline, className, children, ...props }) => {
-  const [copied, setCopied] = useState(false);
-
-  if (inline) {
-    return (
-      <code
-        className="bg-[var(--app-overlay)] px-1.5 py-0.5 text-sm font-mono text-[var(--app-text-dim)] border border-[var(--app-border)] rounded-md break-words"
-        {...props}
-      >
-        {children}
-      </code>
-    );
-  }
-
-  const textToCopy = String(children).replace(/\n$/, "");
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(textToCopy);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  return (
-    <div className="relative group my-6">
-      <button
-        onClick={handleCopy}
-        className="absolute top-2 right-2 px-2 py-1 text-xs font-sans bg-[var(--app-panel)] border border-[var(--app-border)] rounded-md opacity-0 group-hover:opacity-100 transition-opacity text-[var(--app-text-dim)] hover:text-[var(--app-text)] shadow-sm z-10"
-        title="Copy code"
-      >
-        {copied ? "Copied!" : "Copy"}
-      </button>
-      <pre
-        className="bg-[var(--app-overlay)] border border-[var(--app-border)] overflow-x-auto rounded-md max-w-full p-4 pt-10"
-        style={{ fontFamily: "monospace" }}
-      >
-        <code
-          className="block text-sm font-mono text-[var(--app-text-dim)]"
-          {...props}
-        >
-          {children}
-        </code>
-      </pre>
-    </div>
-  );
-};
-
-const UserCodeBlock = ({ node, inline, className, children, ...props }) => {
-  const [copied, setCopied] = useState(false);
-
-  if (inline) {
-    return (
-      <code
-        className="px-1.5 py-0.5 rounded-md text-sm font-mono bg-[var(--app-overlay)] border border-[var(--app-border)] break-words"
-        {...props}
-      >
-        {children}
-      </code>
-    );
-  }
-
-  const textToCopy = String(children).replace(/\n$/, "");
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(textToCopy);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  return (
-    <div className="relative group my-6">
-      <button
-        onClick={handleCopy}
-        className="absolute top-2 right-2 px-2 py-1 text-xs font-sans bg-[var(--app-panel)] border border-[var(--app-border)] rounded-md opacity-0 group-hover:opacity-100 transition-opacity text-[var(--app-text-dim)] hover:text-[var(--app-text)] shadow-sm z-10"
-        title="Copy code"
-      >
-        {copied ? "Copied!" : "Copy"}
-      </button>
-      <pre
-        className="overflow-x-auto custom-scrollbar max-w-full bg-[var(--app-overlay)] border border-[var(--app-border)] p-4 pt-10 rounded-md shadow-inner"
-        style={{ fontFamily: "monospace" }}
-      >
-        <code className="block text-sm font-mono" {...props}>
-          {children}
-        </code>
-      </pre>
     </div>
   );
 };
