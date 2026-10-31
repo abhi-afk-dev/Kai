@@ -3,7 +3,7 @@ import { Moon, Sun } from "lucide-react";
 
 function Header() {
   const [theme, setTheme] = useState(() => {
-    return localStorage.getItem("takumi-blog-theme") || "dark";
+    return localStorage.getItem("kai-theme") || "dark";
   });
 
   useEffect(() => {
@@ -17,7 +17,7 @@ function Header() {
   const toggleTheme = () => {
     const nextTheme = theme === "dark" ? "light" : "dark";
     setTheme(nextTheme);
-    localStorage.setItem("takumi-blog-theme", nextTheme);
+    localStorage.setItem("kai-theme", nextTheme);
   };
 
   return (

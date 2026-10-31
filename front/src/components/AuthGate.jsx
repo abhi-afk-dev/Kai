@@ -37,7 +37,30 @@ export default function AuthGate({ children }) {
   };
 
   if (status === "open") return children;
-  if (status === "checking") return null;
+  if (status === "checking") {
+    return (
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: 9999,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "var(--app-panel, #111)",
+          color: "var(--app-text, #fff)",
+        }}
+      >
+        <div
+          style={{
+            animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+          }}
+        >
+          <h2 style={{ margin: 0, opacity: 0.7 }}>Kai</h2>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -79,7 +102,12 @@ export default function AuthGate({ children }) {
         <button
           type="submit"
           disabled={busy || !input}
-          style={{ padding: 12, borderRadius: 8, cursor: "pointer", color:"whitesmoke" }}
+          style={{
+            padding: 12,
+            borderRadius: 8,
+            cursor: "pointer",
+            color: "whitesmoke",
+          }}
         >
           {busy ? "Checking..." : "Unlock"}
         </button>
