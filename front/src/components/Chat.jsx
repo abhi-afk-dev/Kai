@@ -233,7 +233,8 @@ const AgentResponse = ({ message }) => {
 
   return (
     <div className="flex flex-col gap-3 w-full px-1 sm:px-2 lg:px-0 lg:max-w-5xl animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="border border-[var(--app-border)] p-2 sm:p-2 shadow-lg rounded-md">
+      <div className="p-2 sm:p-2 shadow-lg rounded-md">
+        {/* <div className="border border-[var(--app-border)] p-2 sm:p-2 shadow-lg rounded-md"> */}
         <ReactMarkdown
           components={aiMdComponents}
           remarkPlugins={remarkPlugins}
