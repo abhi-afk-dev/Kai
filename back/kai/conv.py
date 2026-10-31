@@ -96,7 +96,7 @@ async def kai_chat(
     
             while True:
                 response = await client.chat.completions.create(
-                    model="nvidia/nemotron-3.5-super-vl:free", 
+                    model="dots-studio/dots-3-note-preview:free", 
                     messages=messages,
                     tools=kai_tools,
                     tool_choice="auto",
@@ -157,7 +157,7 @@ async def kai_chat_stream(
                 
                 while True:
                     response = await client.chat.completions.create(
-                        model="nvidia/nemotron-3.5-super-vl:free", 
+                        model="dots-studio/dots-3-note-preview:free", 
                         messages=messages,
                         tools=kai_tools,
                         tool_choice="auto",
@@ -213,7 +213,7 @@ async def kai_non_web_stream(
     ]   
     
     stream_response = await client.chat.completions.create(
-        model="nvidia/nemotron-3.5-super-vl:free", 
+        model="dots-studio/dots-3-note-preview:free", 
         messages=messages,
         stream=True,
         max_tokens=2000,

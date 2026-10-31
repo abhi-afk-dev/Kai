@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 client = AsyncOpenAI(base_url="https://openrouter.ai/api/v1", api_key=os.getenv("OPEN_API_KEY"))
 
-MODELS = ["nvidia/nemotron-3.5-super-vl:free", "recursive/flint-v1.0:free"]  # add more live ones
+MODELS = ["dots-studio/dots-3-note-preview:free", "recursive/flint-v1.0:free"]
 WRITE_WORDS = ("create", "send", "delete", "update", "write", "move", "comment", "commit", "publish", "push", "upload")
 
 

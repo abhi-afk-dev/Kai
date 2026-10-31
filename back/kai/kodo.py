@@ -69,7 +69,7 @@ async def _build_judge_messages(user_prompt):
 async def kodo(user_prompt):
     messages = await _build_judge_messages(user_prompt)
     stream = await client.chat.completions.create(
-        model="nvidia/nemotron-3.5-super-vl:free",
+        model="dots-studio/dots-3-note-preview:free",
         messages=messages, stream=True, timeout=120.0,
     )
     async for chunk in stream:

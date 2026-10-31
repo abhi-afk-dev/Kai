@@ -114,15 +114,22 @@ async def main(prompt):
     mode = await get_decision(criteria_orchestrator, prompt)
     
     if mode == "master_loop":
+        message = ""
         async for chunk in run_master_agentic_loop(prompt, mcp_manager):
             yield chunk
+            message += chunk
+        print(f"\n--- THIS WILL BE THE MASTER ---\n{message}\n-------------------------------\n")
 
     elif mode == "single_tasked":
         agent = await get_decision(criteria_hands, prompt)
 
         if agent:
+            message = ""
             async for chunk in single_agent(prompt, agent):
                 yield chunk
+                message += chunk
+            print(f"\n--- THIS WILL BE THE SINGLE ONE ---\n{message}\n-------------------------------\n")
+
         else:
             async for chunk in kai_chat_stream(prompt, system_instruction=KAI_CONVERSATIONAL_INSTRUCTION):
                 yield chunk
